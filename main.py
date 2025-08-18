@@ -1,4 +1,3 @@
-# api/main.py
 import os, json
 from datetime import datetime, timezone
 from pathlib import Path
@@ -19,7 +18,6 @@ INDEX_PATH = MODELS_DIR / "index.json"
 
 SPAM_THRESHOLD = float(os.getenv("SPAM_THRESHOLD", "0.80"))
 
-# Load model index
 if not INDEX_PATH.exists():
     raise RuntimeError(f"Model index not found at {INDEX_PATH}. Run train.py first.")
 with open(INDEX_PATH) as f:
@@ -29,7 +27,6 @@ DEFAULT_MODEL_NAME = os.getenv("MODEL_NAME", index.get("default", AVAILABLE_MODE
 if not AVAILABLE_MODELS:
     raise RuntimeError("No models available. Run train.py.")
 
-# Cache for lazily loaded models
 _model_cache = {}
 
 def load_model(name: str):
@@ -42,10 +39,8 @@ def load_model(name: str):
         _model_cache[name] = joblib.load(path)
     return _model_cache[name]
 
-# DB init
 Base.metadata.create_all(bind=engine)
 
-# Schemas
 class PredictRequest(BaseModel):
     text: str
     subject: Optional[str] = None
@@ -73,8 +68,7 @@ def health():
 def predict(req: PredictRequest, db: Session = Depends(get_db)):
     model_name = (req.model or DEFAULT_MODEL_NAME)
     mdl = load_model(model_name)
-
-    # Try predict_proba; fallback to decision_function -> sigmoid
+    
     try:
         proba = float(mdl.predict_proba([req.text])[0][1])
     except AttributeError:
