@@ -1,4 +1,3 @@
-# api/train.py
 import json
 from datetime import datetime, timezone
 from pathlib import Path
@@ -39,13 +38,11 @@ def build_pipeline(clf):
 def main():
     print(f"Loading data from: {CSV_PATH}")
     df = pd.read_csv(CSV_PATH)
-    # common Kaggle columns: 'label' or 'Category' and 'text' or 'Message'
     label_col = "label" if "label" in df.columns else ("Category" if "Category" in df.columns else None)
     text_col = "text" if "text" in df.columns else ("Message" if "Message" in df.columns else None)
     if not label_col or not text_col:
         raise ValueError(f"Expected columns not found. Have: {df.columns.tolist()}")
-
-    # Normalize labels to 1=spam, 0=ham
+        
     y = df[label_col].astype(str).str.lower().map({"spam": 1, "ham": 0}).fillna(df[label_col]).astype(int)
     X = df[text_col].astype(str)
 
