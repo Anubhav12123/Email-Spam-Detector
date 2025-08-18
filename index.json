@@ -1,0 +1,10 @@
+{
+  "default": "logreg",
+  "models": [
+    "logreg",
+    "linearsvc_cal",
+    "mnb",
+    "rf"
+  ],
+  "trained_at": "2025-08-18T00:51:56.568859+00:00"
+}
