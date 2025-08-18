@@ -1,4 +1,3 @@
-# streamlit_app/app.py
 import os
 import requests
 import pandas as pd
@@ -22,7 +21,6 @@ with t1:
     with c1:
         sender = st.text_input("Sender")
         subject = st.text_input("Subject")
-        # model dropdown with human-readable names
         model_human = st.selectbox(
             "Model",
             list(MODEL_NAME_MAP.keys()),
@@ -45,7 +43,6 @@ with t1:
                 r = requests.post(f"{API_BASE}/predict", json=payload, timeout=10)
                 if r.ok:
                     data = r.json()
-                    # Only show label result (no probability shown to the user)
                     if bool(data.get("label", False)):
                         st.error("Spam")
                     else:
@@ -77,8 +74,6 @@ with t2:
                     st.metric("Spam", int(df["label"].sum()))
                 with m3:
                     st.metric("Not Spam", int((~df["label"]).sum()))
-
-                # Keep the probability series for the time plot, but it's fine if the user doesn't focus on it
                 if "probability" in df.columns and not df["probability"].isna().all():
                     st.line_chart(df.sort_values("created_at")["probability"])
 
