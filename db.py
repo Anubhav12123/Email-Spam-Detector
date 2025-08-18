@@ -1,4 +1,3 @@
-# api/db.py
 import os
 from pathlib import Path
 from sqlalchemy import create_engine
@@ -6,7 +5,6 @@ from sqlalchemy.orm import sessionmaker, declarative_base
 
 DB_URL = os.getenv("DATABASE_URL", "sqlite:///./spam.db")
 
-# Ensure path exists for SQLite relative file
 if DB_URL.startswith("sqlite:///./"):
     Path(".").mkdir(parents=True, exist_ok=True)
 
