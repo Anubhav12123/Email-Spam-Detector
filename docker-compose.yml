@@ -1,0 +1,32 @@
+services:
+  db:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: spam
+      POSTGRES_PASSWORD: spam
+      POSTGRES_DB: spamdb
+    ports:
+      - "5432:5432"
+    volumes:
+      - dbdata:/var/lib/postgresql/data
+  api:
+    build: ./api
+    depends_on:
+      - db
+    environment:
+      DATABASE_URL: postgresql+psycopg2://spam:spam@db:5432/spamdb
+      MODEL_PATH: /app/models/spam_classifier_model.joblib
+    volumes:
+      - ./api/models:/app/models
+    ports:
+      - "8000:8000"
+  app:
+    build: ./streamlit_app
+    depends_on:
+      - api
+    environment:
+      API_BASE: http://api:8000
+    ports:
+      - "8501:8501"
+volumes:
+  dbdata:
